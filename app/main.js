@@ -31,7 +31,7 @@ function App() {
   const [strategy, setStrategy] = useState('simple')
   const [minTvl, setMinTvl] = useState(10000000)
   const [selected, setSelected] = useState(null)
-  const [theme, setTheme] = useState('light')
+  const [theme, setTheme] = useState('light') // Keep a simple manual theme switch for deployment smoke tests
 
   const results = useMemo(() => {
     const filtered = MOCK_OPPORTUNITIES.filter((op) => op.bucket === bucket && op.strategy === strategy && op.tvlUsd >= minTvl)
