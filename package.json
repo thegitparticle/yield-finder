@@ -3,6 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "node dev-server.js",
-    "start": "node dev-server.js"
+    "start": "node dev-server.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   }
 }
