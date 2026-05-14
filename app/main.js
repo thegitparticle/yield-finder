@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'https://esm.sh/react@18.2.0'
+import React, { useMemo, useState } from 'https://esm.sh/react@18.2.0'
 import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client'
 import htm from 'https://esm.sh/htm@3.1.1'
 
@@ -31,6 +31,7 @@ function App() {
   const [strategy, setStrategy] = useState('simple')
   const [minTvl, setMinTvl] = useState(10000000)
   const [selected, setSelected] = useState(null)
+  const [theme, setTheme] = useState('light')
 
   const results = useMemo(() => {
     const filtered = MOCK_OPPORTUNITIES.filter((op) => op.bucket === bucket && op.strategy === strategy && op.tvlUsd >= minTvl)
@@ -43,7 +44,7 @@ function App() {
       .sort((a, b) => b.score - a.score)
   }, [amountUsd, bucket, strategy, minTvl])
 
-  return html`<div className="page"><div className="scanline" aria-hidden="true"></div><${Header} />
+  return html`<div className=${`page theme-${theme}`}><${Header} theme=${theme} onThemeChange=${setTheme} />
   <main className="container">
     <section className="grid two-col">
       <div className="card">
@@ -81,8 +82,8 @@ function OpportunityCard({ op, index, onSelect }) { return html`<div className="
 
 function DetailDrawer({ opportunity, onClose }) { return html`<aside className="drawer"><div className="card"><div className="card-actions"><div className="card-label mono">Opportunity Detail</div><button className="button" onClick=${onClose}>Close</button></div><h3>${opportunity.name}</h3><p className="muted mono">Source: ${opportunity.source} · ${opportunity.chain}</p><p className="muted mono">Base APY: ${opportunity.baseApy.toFixed(2)}% | Reward APY: ${opportunity.rewardApy.toFixed(2)}%</p><p className="muted mono">Why this result: high APY, eligible bucket/complexity, and TVL above your minimum filter.</p><p className="muted mono">Risk notes: ${opportunity.risks.join(' • ')}</p><div className="mini-chart">30d APY: ${sparkline(opportunity.historyApy)}</div><div className="mini-chart">30d TVL: ${sparkline(opportunity.historyTvl.map((v) => v / 1000000))}M</div></div></aside>` }
 
-function Header() { return html`<header className="header"><div className="container header-inner"><div className="brand"><h1>Yield Monitor</h1><span className="muted mono">Read-only DeFi Yield Discovery</span></div></div></header>` }
-function Footer() { return html`<footer className="footer"><div className="container"><p className="muted mono">Not financial advice. APY is variable and not guaranteed.</p></div></footer>` }
+function Header({ theme, onThemeChange }) { return html`<header className="header"><div className="container header-inner"><div className="brand"><h1>Yield Monitor</h1><span className="muted mono">Read-only DeFi Yield Discovery</span></div><div className="theme-switch"><button className=${`button ${theme === 'light' ? 'button-orange' : ''}`} onClick=${() => onThemeChange('light')}>Light</button><button className=${`button ${theme === 'dark' ? 'button-green' : ''}`} onClick=${() => onThemeChange('dark')}>Dark</button></div></div></header>` }
+function Footer() { return html`<footer className="footer"><div className="container"></div></footer>` }
 
 const formatCurrency = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n || 0)
 function sparkline(values) { const ticks = '▁▂▃▄▅▆▇█'; const min = Math.min(...values); const max = Math.max(...values); return values.map((v) => ticks[Math.min(ticks.length - 1, Math.floor(((v - min) / (max - min || 1)) * (ticks.length - 1)))]).join('') }
