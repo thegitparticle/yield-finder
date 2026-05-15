@@ -44,7 +44,7 @@ function App() {
       .sort((a, b) => b.score - a.score)
   }, [amountUsd, bucket, strategy, minTvl])
 
-  return html`<div className=${`page theme-${theme}`}><div className="scanline" /><${Header} theme=${theme} onThemeChange=${setTheme} />
+  return html`<div className=${`page theme-${theme}`}><${Header} theme=${theme} onThemeChange=${setTheme} />
   <main className="container">
     <section className="grid two-col">
       <div className="card">
